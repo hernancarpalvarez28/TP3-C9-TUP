@@ -11,8 +11,14 @@ import {
   MaxLength,
   Min,
 } from 'class-validator';
+import type { Modalidad, Nivel } from '../../../generated/prisma/enums.js';
 
 export class CreateProfesorDto {
+  // id del usuario dueño de este perfil (tiene que tener rol profesor)
+  @IsInt({ message: 'El userId tiene que ser un número entero' })
+  @IsPositive({ message: 'El userId tiene que ser mayor a 0' })
+  userId: number;
+
   @IsString({ message: 'La materia tiene que ser un texto' })
   @IsNotEmpty({ message: 'La materia es obligatoria' })
   materia: string;
@@ -21,7 +27,7 @@ export class CreateProfesorDto {
     message:
       'El nivel tiene que ser primario, secundario, universitario o adultos',
   })
-  nivel: string;
+  nivel: Nivel;
 
   @IsNumber({}, { message: 'El precio tiene que ser un número' })
   @IsPositive({ message: 'El precio tiene que ser mayor a 0' })
@@ -33,7 +39,7 @@ export class CreateProfesorDto {
     each: true,
     message: 'Cada modalidad tiene que ser Virtual o Presencial',
   })
-  modalidades: string[];
+  modalidades: Modalidad[];
 
   @IsOptional()
   @IsString({ message: 'La formación tiene que ser un texto' })

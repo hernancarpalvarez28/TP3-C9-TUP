@@ -4,8 +4,10 @@ import {
   IsNotEmpty,
   IsString,
   Matches,
+  MaxLength,
   MinLength,
 } from 'class-validator';
+import type { Rol } from '../../../generated/prisma/enums.js';
 
 export class CreateUserDto {
   @IsString({ message: 'El nombre tiene que ser un texto' })
@@ -32,10 +34,14 @@ export class CreateUserDto {
   @MinLength(8, {
     message: 'La contraseña tiene que tener al menos 8 caracteres',
   })
+  // bcrypt solo usa los primeros 72 caracteres, así que no dejamos pasar más.
+  @MaxLength(72, {
+    message: 'La contraseña puede tener como máximo 72 caracteres',
+  })
   password: string;
 
   @IsIn(['alumno', 'profesor'], {
     message: 'El rol tiene que ser alumno o profesor',
   })
-  rol: string;
+  rol: Rol;
 }
