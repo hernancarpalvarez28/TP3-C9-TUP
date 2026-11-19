@@ -57,3 +57,11 @@ pids
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+/generated/prisma
+/src/generated/prisma
+
+# Carpetas que puede crear prisma init
+/.agents
+/.claude
+/.windsurf

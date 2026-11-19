@@ -1,7 +1,23 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { ProfesorService } from './profesor.service.js';
 import { CreateProfesorDto } from './dto/create-profesor.dto.js';
 import { UpdateProfesorDto } from './dto/update-profesor.dto.js';
+
+// Convierte el :id de la URL en número. Si no es un número, responde 400 con este mensaje.
+const idPipe = new ParseIntPipe({
+  exceptionFactory: () =>
+    new BadRequestException('El id tiene que ser un número entero.'),
+});
 
 @Controller('profesor')
 export class ProfesorController {
@@ -18,17 +34,20 @@ export class ProfesorController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.profesorService.findOne(+id);
+  findOne(@Param('id', idPipe) id: number) {
+    return this.profesorService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProfesorDto: UpdateProfesorDto) {
-    return this.profesorService.update(+id, updateProfesorDto);
+  update(
+    @Param('id', idPipe) id: number,
+    @Body() updateProfesorDto: UpdateProfesorDto,
+  ) {
+    return this.profesorService.update(id, updateProfesorDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.profesorService.remove(+id);
+  remove(@Param('id', idPipe) id: number) {
+    return this.profesorService.remove(id);
   }
 }

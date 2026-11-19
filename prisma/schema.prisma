@@ -1,0 +1,74 @@
+// Esquema de la base de datos de MiProfe.
+// Cada "model" es una tabla y cada "enum" es una lista cerrada de valores.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Valores que manda el front (los mismos que validan los DTO)
+enum Rol {
+  alumno
+  profesor
+}
+
+enum Nivel {
+  primario
+  secundario
+  universitario
+  adultos
+}
+
+enum Modalidad {
+  Virtual
+  Presencial
+  Ambas
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  nombre       String
+  dni          String    @unique @db.VarChar(8)
+  email        String    @unique
+  telefono     String
+  ciudad       String
+  passwordHash String
+  rol          Rol
+  alumno       Alumno?
+  profesor     Profesor?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Alumno {
+  id          Int       @id @default(autoincrement())
+  nivel       Nivel
+  modalidad   Modalidad
+  materias    String[]  @default([])
+  descripcion String?   @db.VarChar(500)
+  userId      Int       @unique
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Profesor {
+  id          Int         @id @default(autoincrement())
+  materia     String
+  nivel       Nivel
+  precio      Decimal     @db.Decimal(10, 2)
+  modalidades Modalidad[]
+  formacion   String?
+  experiencia Int?
+  horarios    String?
+  zona        String?
+  descripcion String?     @db.VarChar(500)
+  userId      Int         @unique
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}

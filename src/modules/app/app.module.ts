@@ -2,11 +2,12 @@ import { Module } from '@nestjs/common';
 import { createObserveModule } from '@nestjs/observe';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
-import {ProfesorModule} from '../profesor/profesor.module.js';
-import {AlumnoModule} from '../alumno/alumno.module.js';
+import { ProfesorModule } from '../profesor/profesor.module.js';
+import { AlumnoModule } from '../alumno/alumno.module.js';
 import { UsersModule } from '../users/users.module.js';
 import { AuthModule } from '../auth/auth.module.js';
 import { PrincipalModule } from '../principal/principal.module.js';
+import { PrismaModule } from '../prisma/prisma.module.js';
 
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
 
@@ -20,6 +21,7 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
       appSecret: process.env.OBSERVE_APP_SECRET ?? 'YOUR_APP_SECRET',
       serviceId: 'TP3-C9-TUP',
     }),
+    PrismaModule,
     ProfesorModule,
     AlumnoModule,
     UsersModule,
