@@ -1,26 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { CreatePrincipalDto } from './dto/create-principal.dto.js';
-import { UpdatePrincipalDto } from './dto/update-principal.dto.js';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { BuscarPrincipalDto } from './dto/buscar-principal.dto.js';
 
 @Injectable()
 export class PrincipalService {
-  create(createPrincipalDto: CreatePrincipalDto) {
-    return 'This action adds a new principal';
-  }
+  constructor(private readonly prisma: PrismaService) {}
 
-  findAll() {
-    return `This action returns all principal`;
-  }
+  // Busca los profesores que dan esa materia (y en esa zona, si la mandan).
+  buscar(buscarPrincipalDto: BuscarPrincipalDto) {
+    const { materia, zona } = buscarPrincipalDto;
 
-  findOne(id: number) {
-    return `This action returns a #${id} principal`;
-  }
-
-  update(id: number, updatePrincipalDto: UpdatePrincipalDto) {
-    return `This action updates a #${id} principal`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} principal`;
+    return this.prisma.profesor.findMany({
+      where: {
+        // contains + insensitive: "mate" encuentra "Matemática"
+        materia: { contains: materia, mode: 'insensitive' },
+        zona: zona ? { contains: zona, mode: 'insensitive' } : undefined,
+      },
+      // Cada profesor trae su usuario, sin la contraseña
+      include: { user: { omit: { passwordHash: true } } },
+      // Del más barato al más caro
+      orderBy: { precio: 'asc' },
+    });
   }
 }
