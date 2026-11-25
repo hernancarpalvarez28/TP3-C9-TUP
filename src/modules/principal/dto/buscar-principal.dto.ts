@@ -1,6 +1,7 @@
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class CreatePrincipalDto {
+// Datos que recibe el buscador del inicio (van en la URL: ?materia=...&zona=...)
+export class BuscarPrincipalDto {
   @IsString({ message: 'La materia tiene que ser un texto' })
   @IsNotEmpty({ message: 'Escribí qué materia querés aprender' })
   materia: string;
